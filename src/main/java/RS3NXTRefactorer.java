@@ -1,3 +1,4 @@
+
 //Attempts to refactor parts of the NXT RS3 Win64 client. This might break.
 //
 // This WILL override ANY data you have. Make a backup BEFORE running this. You have been warned.
@@ -663,12 +664,12 @@ public class RS3NXTRefactorer extends GhidraScript {
 		// Find generate
 		Function generate = null;
 		for (Instruction insn : getFunctionInstructions(init)) {
+			// There's 3 calls in Isaac::Init, first two to memset, third to Isaac::Generate.
 			if (insn.getMnemonicString().equals("CALL")) {
-				if (generate != null) {
-					throw new IllegalStateException("More than 1 CALL in jag::Isaac::Init");
+				Function tmp = getFunctionAt(insn.getAddress(0));
+				if (generate != tmp) {
+					generate = tmp;
 				}
-
-				generate = getFunctionAt(insn.getAddress(0));
 			}
 		}
 
@@ -1823,3 +1824,4 @@ public class RS3NXTRefactorer extends GhidraScript {
 		}
 	}
 }
+
